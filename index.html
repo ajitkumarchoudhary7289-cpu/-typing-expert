@@ -1,15 +1,20 @@
 
 <!DOCTYPE html>
 <html lang="en">
-  <link rel="manifest" href="./manifest.json">
-<meta name="theme-color" content="#078bff">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="AJIT TYPE">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#050b18">
+
 <title>AJIT TYPING EXPERT</title>
+
+<meta name="description" content="Improve your typing speed, accuracy and confidence with AJIT TYPING EXPERT.">
+<meta name="theme-color" content="#078bff">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="AJIT TYPE">
+
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" type="image/png" href="./icon-192.png">
+<link rel="apple-touch-icon" href="./icon-192.png">
 
 <style>
 * {
@@ -18,15 +23,7 @@
   box-sizing: border-box;
   font-family: Arial, sans-serif;
 }
-<script>
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./service-worker.js")
-      .then(() => console.log("PWA Ready!"))
-      .catch(error => console.log("PWA Error:", error));
-  });
-}
-</script>
+
 body {
   background: #050b18;
   color: white;
@@ -210,10 +207,11 @@ footer {
   <div class="logo">AJIT <span>TYPING EXPERT</span></div>
 
   <nav class="menu">
-    <a href="#">Home</a>
-    <a href="#practice">Practice</a>
-    <a href="#games">Games</a>
-    <a href="#progress">Progress</a>
+    <a href="index.html">Home</a>
+    <a href="practice.html">Practice</a>
+    <a href="games.html">Games</a>
+    <a href="progress.html">Progress</a>
+    <a href="settings.html">Settings</a>
   </nav>
 </header>
 
@@ -222,7 +220,7 @@ footer {
 
   <p>Improve your typing speed, accuracy and confidence.</p>
 
-  <button class="btn" onclick="location.href='#practice'">
+  <button class="btn" onclick="location.href='typing.html'">
     START TYPING →
   </button>
 </section>
@@ -250,37 +248,37 @@ footer {
 
   <section class="features">
 
-    <div class="feature">
+    <div class="feature" onclick="location.href='typing.html'">
       <div class="icon">⚡</div>
       <h3>Speed Test</h3>
       <p>Test your typing speed and accuracy.</p>
     </div>
 
-    <div class="feature">
+    <div class="feature" onclick="location.href='practice.html'">
       <div class="icon">⌨️</div>
       <h3>Learn Typing</h3>
       <p>Start from beginner and reach advanced level.</p>
     </div>
 
-    <div class="feature">
+    <div class="feature" onclick="location.href='practice.html'">
       <div class="icon">🇮🇳</div>
       <h3>Hindi Typing</h3>
       <p>Practice Hindi typing.</p>
     </div>
 
-    <div class="feature">
+    <div class="feature" onclick="location.href='practice.html'">
       <div class="icon">🌍</div>
       <h3>English Typing</h3>
       <p>Improve your English typing skills.</p>
     </div>
 
-    <div class="feature">
+    <div class="feature" onclick="location.href='daily-challenge.html'">
       <div class="icon">🏆</div>
       <h3>Daily Challenge</h3>
       <p>Complete daily typing challenges.</p>
     </div>
 
-    <div class="feature">
+    <div class="feature" onclick="location.href='progress.html'">
       <div class="icon">📊</div>
       <h3>Performance</h3>
       <p>Track your typing performance.</p>
@@ -292,7 +290,7 @@ footer {
 
   <section class="features">
 
-    <div class="feature">
+    <div class="feature" onclick="location.href='games.html'">
       <div class="icon">🎈</div>
       <h3>Balloon Typing</h3>
       <p>Type words and pop balloons.</p>
@@ -317,6 +315,35 @@ footer {
 <footer>
   © 2026 AJIT TYPING EXPERT | Type Faster. Think Faster.
 </footer>
+
+<script>
+// Register Service Worker
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./service-worker.js")
+      .then(() => console.log("PWA Ready!"))
+      .catch(error => console.log("PWA Error:", error));
+  });
+}
+
+// Load typing progress
+try {
+  const history = JSON.parse(localStorage.getItem("ajitTypingHistory")) || [];
+
+  if (history.length > 0) {
+    const best = Math.max(...history.map(item => Number(item.wpm) || 0));
+    const avg = Math.round(
+      history.reduce((sum, item) => sum + (Number(item.accuracy) || 0), 0) / history.length
+    );
+
+    document.getElementById("wpm").textContent = best;
+    document.getElementById("accuracy").textContent = avg + "%";
+    document.getElementById("tests").textContent = history.length;
+  }
+} catch (error) {
+  console.log("Progress could not be loaded.");
+}
+</script>
 
 </body>
 </html>

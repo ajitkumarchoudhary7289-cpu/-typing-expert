@@ -1,0 +1,260 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#050b18">
+<title>Typing Practice | AJIT TYPING EXPERT</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial}
+body{background:#050b18;color:white;padding:15px}
+header{max-width:1000px;margin:auto;padding:18px 0;display:flex;justify-content:space-between;border-bottom:1px solid #173657}
+.logo{font-weight:bold;color:#00c8ff}
+a{color:#00c8ff;text-decoration:none}
+main{max-width:1000px;margin:30px auto}
+h1{text-align:center;color:#00c8ff;margin-bottom:10px}
+.sub{text-align:center;color:#9caec5;margin-bottom:25px}
+.panel{background:#0b192c;border:1px solid #163957;padding:20px;border-radius:13px;margin-bottom:18px}
+.tabs{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+button{padding:12px 18px;border:0;border-radius:8px;background:#173554;color:white;cursor:pointer;font-weight:bold}
+button.active,.primary{background:linear-gradient(90deg,#007bff,#00d4ff);color:white}
+.lessons{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.lesson{background:#10223a;padding:17px;border-radius:10px;border:1px solid #244b6b;cursor:pointer}
+.lesson:hover{border-color:#00c8ff}
+.lesson h3{color:#00d4ff;margin-bottom:8px}
+.lesson p{color:#aabbd0;font-size:13px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
+.stat{text-align:center;background:#10223a;padding:14px;border-radius:9px}
+.stat strong{display:block;font-size:23px;color:#00d4ff}
+.stat small{color:#aabbd0}
+#target{font-size:21px;line-height:2;color:#c3d4e7;min-height:100px}
+.correct{color:#00e6a0}
+.wrong{color:#ff6262;background:#44202b}
+.current{border-bottom:2px solid #00c8ff}
+textarea{width:100%;height:115px;background:#061222;color:white;border:1px solid #2870a3;border-radius:9px;padding:14px;font-size:17px;margin-top:15px;outline:none}
+#message{text-align:center;margin-top:14px;color:#00d4ff}
+@media(max-width:650px){
+.lessons{grid-template-columns:repeat(2,1fr)}
+.stats{grid-template-columns:repeat(3,1fr)}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="logo">AJIT TYPING EXPERT</div>
+<a href="index.html">← Home</a>
+</header>
+
+<main>
+<h1>⌨️ TYPING ACADEMY</h1>
+<p class="sub">Learn typing step by step from beginner to advanced.</p>
+
+<div class="panel">
+<h3 style="margin-bottom:15px">Select Your Level</h3>
+<div class="tabs">
+<button class="active" onclick="showLevel('Beginner',this)">Beginner</button>
+<button onclick="showLevel('Intermediate',this)">Intermediate</button>
+<button onclick="showLevel('Advanced',this)">Advanced</button>
+</div>
+</div>
+
+<div class="panel">
+<h3 style="margin-bottom:15px">📚 Lessons</h3>
+<div class="lessons" id="lessons"></div>
+</div>
+
+<div class="panel">
+<h3 id="lessonTitle" style="margin-bottom:15px;color:#00c8ff">Select a Lesson</h3>
+
+<div class="stats">
+<div class="stat"><strong id="wpm">0</strong><small>WPM</small></div>
+<div class="stat"><strong id="accuracy">100%</strong><small>ACCURACY</small></div>
+<div class="stat"><strong id="errors">0</strong><small>ERRORS</small></div>
+</div>
+
+<div id="target">Choose any lesson above to start learning.</div>
+
+<textarea id="typing" placeholder="Select a lesson first..." disabled></textarea>
+
+<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:15px">
+<button class="primary" onclick="startLesson()">START / RETRY</button>
+<button onclick="nextLesson()">NEXT LESSON →</button>
+</div>
+
+<p id="message">Your typing journey starts here!</p>
+</div>
+
+<div class="panel">
+<h3 style="color:#00c8ff;margin-bottom:12px">⌨️ Keyboard Finger Guide</h3>
+<p style="line-height:2;color:#b9c9dc">
+Left Pinky: Q, A, Z<br>
+Left Ring: W, S, X<br>
+Left Middle: E, D, C<br>
+Left Index: R, F, V, T, G, B<br>
+Right Index: Y, H, N, U, J, M<br>
+Right Middle: I, K, ,<br>
+Right Ring: O, L, .<br>
+Right Pinky: P and remaining keys<br>
+Thumbs: Spacebar
+</p>
+</div>
+
+</main>
+
+<script>
+const data={
+Beginner:[
+["Home Row","asdf jkl; asdf jkl; fjfj dkdk"],
+["Left Hand","asdf qwer zxcv asdf qwer"],
+["Right Hand","jkl; uiop nm,. jkl; uiop"],
+["Spacebar","my name is ajit i am learning typing"],
+["Easy Words","apple ball cat dog fish tree book"],
+["Simple Sentences","I am learning typing every day."]
+],
+Intermediate:[
+["Common Words","practice computer keyboard internet student"],
+["Capital Letters","India Bihar Patna Dumraon Learning"],
+["Numbers","12345 67890 24680 13579"],
+["Punctuation","Hello, how are you? I am fine!"],
+["Sentences","Hard work and practice improve your typing speed."],
+["Paragraph","Technology helps students learn new things and explore the world."]
+],
+Advanced:[
+["Long Words","responsibility development communication opportunity"],
+["Complex Sentence","Consistent practice builds confidence, accuracy and professional typing skills."],
+["Advanced Numbers","9876543210 1234567890 4567890123"],
+["Mixed Practice","India's future depends on education, technology and innovation."],
+["Professional Text","A professional typist maintains speed, precision and consistency."],
+["Challenge","Success requires discipline, patience, knowledge and continuous improvement."]
+]
+};
+
+let level="Beginner";
+let current=0;
+let text="";
+let startedAt=0;
+let started=false;
+let completed=new Set();
+
+const input=document.getElementById("typing");
+const target=document.getElementById("target");
+
+function showLevel(name,btn){
+level=name;
+current=0;
+
+document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));
+btn.classList.add("active");
+
+renderLessons();
+selectLesson(0);
+}
+
+function renderLessons(){
+const box=document.getElementById("lessons");
+box.innerHTML="";
+
+data[level].forEach((item,index)=>{
+const div=document.createElement("div");
+div.className="lesson";
+div.innerHTML=`<h3>${completed.has(level+index)?"✓ ":""}${index+1}. ${item[0]}</h3><p>${level} Practice</p>`;
+div.onclick=()=>selectLesson(index);
+box.appendChild(div);
+});
+}
+
+function selectLesson(index){
+current=index;
+text=data[level][index][1];
+
+document.getElementById("lessonTitle").textContent=data[level][index][0];
+
+input.value="";
+input.disabled=false;
+input.focus();
+
+started=false;
+startedAt=0;
+
+document.getElementById("wpm").textContent=0;
+document.getElementById("accuracy").textContent="100%";
+document.getElementById("errors").textContent=0;
+
+renderTarget();
+document.getElementById("message").textContent="Start typing the lesson!";
+}
+
+function renderTarget(){
+target.innerHTML="";
+[...text].forEach((char,index)=>{
+const span=document.createElement("span");
+span.textContent=char;
+if(index===0)span.classList.add("current");
+target.appendChild(span);
+});
+}
+
+input.addEventListener("input",()=>{
+if(!text)return;
+
+if(!started){
+started=true;
+startedAt=Date.now();
+}
+
+const typed=input.value;
+let correct=0;
+let errors=0;
+
+[...typed].forEach((char,index)=>{
+if(char===text[index])correct++;
+else errors++;
+});
+
+const accuracy=typed.length?Math.round(correct/typed.length*100):100;
+const minutes=Math.max((Date.now()-startedAt)/60000,1/60);
+const wpm=Math.round(correct/5/minutes);
+
+document.getElementById("wpm").textContent=wpm;
+document.getElementById("accuracy").textContent=accuracy+"%";
+document.getElementById("errors").textContent=errors;
+
+[...target.children].forEach((span,index)=>{
+span.className="";
+if(index<typed.length){
+span.classList.add(typed[index]===text[index]?"correct":"wrong");
+}
+if(index===typed.length)span.classList.add("current");
+});
+
+if(typed===text){
+completed.add(level+current);
+document.getElementById("message").textContent="🎉 Lesson Completed! Great Work!";
+renderLessons();
+input.disabled=true;
+}
+});
+
+function startLesson(){
+selectLesson(current);
+input.focus();
+}
+
+function nextLesson(){
+if(current<data[level].length-1){
+selectLesson(current+1);
+}else{
+document.getElementById("message").textContent="🏆 Level Completed! Well Done!";
+}
+}
+
+renderLessons();
+selectLesson(0);
+</script>
+
+</body>
+</html>

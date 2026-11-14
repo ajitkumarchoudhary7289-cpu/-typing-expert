@@ -1,0 +1,155 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Challenge | AJIT TYPING EXPERT</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#020817;color:#eaf5ff;font-family:Arial,sans-serif;padding:20px}
+.container{max-width:750px;margin:30px auto}
+header{display:flex;justify-content:space-between;align-items:center;gap:10px}
+a{color:#00c8ff;text-decoration:none}
+h1{font-size:30px;color:#00c8ff}
+.card{background:#071426;border:1px solid #123b59;border-radius:18px;padding:22px;margin-top:20px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat{background:#0b2038;padding:15px;border-radius:12px;text-align:center}
+.stat strong{display:block;font-size:25px;color:#00d9ff;margin-top:7px}
+#passage{font-size:19px;line-height:1.8;color:#a9c4df}
+textarea{width:100%;height:130px;background:#020c1c;color:white;border:1px solid #087fba;border-radius:12px;padding:15px;font-size:18px;resize:vertical;margin-top:15px}
+button{border:0;border-radius:10px;padding:13px 20px;background:#078bff;color:white;font-weight:bold;font-size:15px;cursor:pointer;margin:5px 3px}
+button:disabled{opacity:.5;cursor:not-allowed}
+#result{display:none;text-align:center}
+small{color:#9bb4cc}
+@media(max-width:500px){h1{font-size:24px}.stats{gap:6px}.stat{padding:10px}.stat strong{font-size:20px}}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<strong>AJIT TYPING EXPERT</strong>
+<a href="index.html">← Dashboard</a>
+</header>
+
+<h1>⚡ Daily Typing Challenge</h1>
+<p>हर दिन अपनी Typing Speed को बेहतर बनाओ!</p>
+
+<div class="card">
+<p><small>TODAY'S CHALLENGE</small></p>
+<h2 id="dayTitle">Daily Challenge</h2>
+<div class="stats">
+<div class="stat">Time<strong id="time">60</strong></div>
+<div class="stat">WPM<strong id="wpm">0</strong></div>
+<div class="stat">Accuracy<strong id="accuracy">100%</strong></div>
+</div>
+</div>
+
+<div class="card" id="game">
+<h3>Type the paragraph below:</h3>
+<p id="passage"></p>
+<textarea id="typingInput" placeholder="यहाँ टाइप करना शुरू करें..." disabled></textarea>
+<br>
+<button id="startBtn" onclick="startTest()">Start Challenge</button>
+<button onclick="resetTest()">Restart</button>
+<p id="status"><small>Start Challenge दबाकर टेस्ट शुरू करें।</small></p>
+</div>
+
+<div class="card" id="result">
+<h2>🏆 Challenge Completed!</h2>
+<h3 id="finalWpm"></h3>
+<h3 id="finalAccuracy"></h3>
+<h3 id="finalScore"></h3>
+<p>अच्छा प्रयास! रोज़ अभ्यास करते रहो।</p>
+<button onclick="resetTest()">Try Again</button>
+</div>
+</div>
+
+<script>
+const passages=[
+"Practice makes a person better every day. Typing is an important skill that helps us work faster and smarter. Keep learning and never give up.",
+"Technology is changing the world. Students should learn new skills and use their time wisely. Regular practice helps us become confident.",
+"Success comes through patience and hard work. Every small step takes us closer to our goals. Believe in yourself and keep improving.",
+"Education gives us knowledge and confidence. We should develop good habits, work hard and always try to learn something new."
+];
+
+const today=new Date();
+const dayNumber=Math.floor(new Date(today.getFullYear(),today.getMonth(),today.getDate()).getTime()/86400000);
+const passage=passages[dayNumber%passages.length];
+
+document.getElementById("passage").textContent=passage;
+document.getElementById("dayTitle").textContent=
+"Challenge #"+(dayNumber+1);
+
+let time=60, timer=null, started=false, finished=false;
+let startTime=0;
+
+const input=document.getElementById("typingInput");
+
+function startTest(){
+if(started)return;
+started=true;
+startTime=Date.now();
+input.disabled=false;
+input.focus();
+document.getElementById("startBtn").disabled=true;
+document.getElementById("status").textContent="टाइपिंग शुरू करें!";
+timer=setInterval(()=>{
+time--;
+document.getElementById("time").textContent=time;
+updateStats();
+if(time<=0)endTest();
+},1000);
+}
+
+input.addEventListener("input",()=>{
+if(!started||finished)return;
+updateStats();
+if(input.value.length>=passage.length)endTest();
+});
+
+function updateStats(){
+let typed=input.value;
+let correct=0;
+for(let i=0;i<typed.length;i++){
+if(typed[i]===passage[i])correct++;
+}
+let accuracy=typed.length?Math.round(correct/typed.length*100):100;
+let elapsed=Math.max((Date.now()-startTime)/60000,1/60);
+let wpm=Math.round((correct/5)/elapsed);
+document.getElementById("wpm").textContent=wpm;
+document.getElementById("accuracy").textContent=accuracy+"%";
+return {wpm,accuracy,correct};
+}
+
+function endTest(){
+if(finished)return;
+finished=true;
+clearInterval(timer);
+input.disabled=true;
+let result=updateStats();
+let score=Math.round(result.wpm*result.accuracy/100);
+document.getElementById("game").style.display="none";
+document.getElementById("result").style.display="block";
+document.getElementById("finalWpm").textContent="Speed: "+result.wpm+" WPM";
+document.getElementById("finalAccuracy").textContent="Accuracy: "+result.accuracy+"%";
+document.getElementById("finalScore").textContent="Score: "+score;
+document.getElementById("status").textContent="Challenge complete!";
+}
+
+function resetTest(){
+clearInterval(timer);
+time=60;started=false;finished=false;
+input.value="";
+input.disabled=true;
+document.getElementById("time").textContent=60;
+document.getElementById("wpm").textContent=0;
+document.getElementById("accuracy").textContent="100%";
+document.getElementById("game").style.display="block";
+document.getElementById("result").style.display="none";
+document.getElementById("startBtn").disabled=false;
+document.getElementById("status").textContent="Start Challenge दबाकर टेस्ट शुरू करें।";
+}
+</script>
+</body>
+</html>

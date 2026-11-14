@@ -1,0 +1,26 @@
+
+{
+  "name": "AJIT TYPING EXPERT",
+  "short_name": "AJIT TYPE",
+  "description": "Type Faster. Think Faster.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#020817",
+  "theme_color": "#078bff",
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

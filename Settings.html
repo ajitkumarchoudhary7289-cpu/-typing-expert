@@ -1,0 +1,175 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#050b18">
+<title>Settings | AJIT TYPING EXPERT</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+body{background:#050b18;color:white;min-height:100vh;padding:15px}
+header{max-width:850px;margin:auto;padding:18px 0;display:flex;justify-content:space-between;border-bottom:1px solid #173657}
+.logo{font-weight:bold;color:#00c8ff}
+a{color:#00c8ff;text-decoration:none}
+main{max-width:750px;margin:35px auto}
+h1{text-align:center;color:#00c8ff;margin-bottom:10px}
+.subtitle{text-align:center;color:#9caec5;margin-bottom:25px}
+.section{background:#0b192c;border:1px solid #163957;border-radius:13px;padding:20px;margin-bottom:17px}
+.section h2{font-size:18px;margin-bottom:18px;color:#00d4ff}
+.setting{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:13px 0;border-bottom:1px solid #1b344e}
+.setting:last-child{border-bottom:0}
+.setting p{font-size:14px}
+.setting small{display:block;color:#9caec5;margin-top:5px}
+select,input[type=text]{background:#102b47;color:white;border:1px solid #2870a3;padding:10px;border-radius:7px;max-width:150px;width:100%}
+input[type=range]{width:120px;accent-color:#00c8ff}
+input[type=checkbox]{width:20px;height:20px;accent-color:#00c8ff}
+button{padding:13px 20px;border:0;border-radius:8px;background:linear-gradient(90deg,#007bff,#00d4ff);color:white;font-weight:bold;cursor:pointer}
+.actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:20px}
+.danger{background:#b83245}
+#status{text-align:center;color:#00e6a0;margin-top:12px}
+body.light{background:#edf3fa;color:#14253b}
+body.light header{border-color:#b7c9dd}
+body.light .section{background:white;border-color:#c6d7e8}
+body.light .setting{border-color:#d7e2ed}
+body.light .setting small,body.light .subtitle{color:#536a83}
+body.light select,body.light input[type=text]{background:#f0f5fb;color:#14253b}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="logo">AJIT TYPING EXPERT</div>
+<a href="index.html">← Home</a>
+</header>
+
+<main>
+<h1>⚙️ SETTINGS</h1>
+<p class="subtitle">Customize your typing experience.</p>
+
+<div class="section">
+<h2>👤 User Profile</h2>
+<div class="setting">
+<div><p>Your Name</p><small>Personalize your account</small></div>
+<input type="text" id="username" placeholder="Enter your name">
+</div>
+</div>
+
+<div class="section">
+<h2>🎨 Appearance</h2>
+
+<div class="setting">
+<div><p>Theme</p><small>Choose your preferred appearance</small></div>
+<select id="theme">
+<option value="dark">Dark Mode</option>
+<option value="light">Light Mode</option>
+</select>
+</div>
+
+<div class="setting">
+<div><p>Font Size</p><small>Adjust text size</small></div>
+<input type="range" id="fontSize" min="14" max="22" value="16">
+</div>
+</div>
+
+<div class="section">
+<h2>⌨️ Typing Preferences</h2>
+
+<div class="setting">
+<div><p>Typing Language</p><small>Select practice language</small></div>
+<select id="language">
+<option value="English">English</option>
+<option value="Hindi">Hindi</option>
+</select>
+</div>
+
+<div class="setting">
+<div><p>Difficulty</p><small>Choose practice level</small></div>
+<select id="difficulty">
+<option value="Beginner">Beginner</option>
+<option value="Intermediate">Intermediate</option>
+<option value="Advanced">Advanced</option>
+</select>
+</div>
+
+<div class="setting">
+<div><p>Sound Effects</p><small>Enable game sounds</small></div>
+<input type="checkbox" id="sound">
+</div>
+</div>
+
+<div class="actions">
+<button onclick="saveSettings()">SAVE SETTINGS</button>
+<button class="danger" onclick="resetSettings()">RESET</button>
+</div>
+
+<p id="status"></p>
+
+</main>
+
+<script>
+const ids=["username","theme","fontSize","language","difficulty","sound"];
+
+function loadSettings(){
+let saved={};
+
+try{
+saved=JSON.parse(localStorage.getItem("ajitSettings"))||{};
+}catch(e){}
+
+ids.forEach(id=>{
+const el=document.getElementById(id);
+if(saved[id]!==undefined){
+if(id==="sound")el.checked=saved[id];
+else el.value=saved[id];
+}
+});
+
+applySettings();
+}
+
+function saveSettings(){
+const data={};
+
+ids.forEach(id=>{
+const el=document.getElementById(id);
+data[id]=id==="sound"?el.checked:el.value;
+});
+
+localStorage.setItem("ajitSettings",JSON.stringify(data));
+applySettings();
+
+document.getElementById("status").textContent="✓ Settings Saved Successfully!";
+}
+
+function applySettings(){
+document.body.classList.toggle("light",document.getElementById("theme").value==="light");
+document.body.style.fontSize=document.getElementById("fontSize").value+"px";
+}
+
+function resetSettings(){
+if(!confirm("Reset all settings to default?"))return;
+
+localStorage.removeItem("ajitSettings");
+ids.forEach(id=>{
+const el=document.getElementById(id);
+
+if(id==="theme")el.value="dark";
+else if(id==="fontSize")el.value=16;
+else if(id==="language")el.value="English";
+else if(id==="difficulty")el.value="Beginner";
+else if(id==="sound")el.checked=false;
+else el.value="";
+});
+
+applySettings();
+document.getElementById("status").textContent="Settings Reset Successfully!";
+}
+
+loadSettings();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,230 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#050b18">
+<title>Typing Test | AJIT TYPING EXPERT</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+body{background:#050b18;color:white;min-height:100vh;padding:20px}
+header{max-width:1000px;margin:auto;display:flex;justify-content:space-between;align-items:center;padding:15px 0;border-bottom:1px solid #173657}
+.logo{color:#00c8ff;font-weight:bold;font-size:20px}
+a{color:#00c8ff;text-decoration:none}
+main{max-width:950px;margin:35px auto}
+h1{text-align:center;font-size:30px;margin-bottom:10px}
+.sub{text-align:center;color:#9caec5;margin-bottom:30px}
+.panel{background:#0b192c;border:1px solid #163957;padding:22px;border-radius:15px;margin-bottom:20px}
+.modes{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+button{border:0;border-radius:8px;padding:12px 17px;cursor:pointer;font-weight:bold}
+.mode{background:#152b45;color:white}
+.mode.active,.primary{background:linear-gradient(90deg,#007bff,#00d4ff);color:white}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:20px 0}
+.stat{text-align:center;background:#10223a;padding:17px 5px;border-radius:10px}
+.stat strong{display:block;color:#00d4ff;font-size:25px;margin-bottom:5px}
+.stat span{font-size:12px;color:#aabbd0}
+#passage{font-size:20px;line-height:2;letter-spacing:.3px;color:#b9c9dc;user-select:none;min-height:120px}
+.correct{color:#00e6a0}
+.wrong{color:#ff6262;background:#44202b;border-radius:3px}
+.current{border-bottom:3px solid #00c8ff}
+textarea{width:100%;height:130px;background:#061222;border:1px solid #225078;border-radius:10px;color:white;padding:15px;font-size:17px;resize:vertical;outline:none;margin-top:15px}
+textarea:focus{border-color:#00c8ff}
+.controls{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:18px}
+#result{text-align:center;display:none}
+#result h2{color:#00d4ff;margin-bottom:15px}
+#result p{margin:12px}
+.note{text-align:center;color:#8ca2ba;font-size:13px;margin-top:18px}
+@media(max-width:600px){
+.stats{grid-template-columns:repeat(2,1fr)}
+#passage{font-size:17px}
+h1{font-size:25px}
+}
+</style>
+</head>
+
+<body>
+<header>
+<div class="logo">AJIT TYPING EXPERT</div>
+<a href="index.html">← Dashboard</a>
+</header>
+
+<main>
+<h1>⌨️ Typing Speed Test</h1>
+<p class="sub">Test your speed. Improve your accuracy.</p>
+
+<div class="panel">
+<div class="modes">
+<button class="mode active" data-time="60">1 Min</button>
+<button class="mode" data-time="120">2 Min</button>
+<button class="mode" data-time="300">5 Min</button>
+<button class="mode" data-time="600">10 Min</button>
+</div>
+</div>
+
+<div class="stats">
+<div class="stat"><strong id="timer">60</strong><span>SECONDS</span></div>
+<div class="stat"><strong id="wpm">0</strong><span>WPM</span></div>
+<div class="stat"><strong id="accuracy">100%</strong><span>ACCURACY</span></div>
+<div class="stat"><strong id="errors">0</strong><span>ERRORS</span></div>
+</div>
+
+<div class="panel" id="testArea">
+<h3 style="margin-bottom:15px">Type the following text:</h3>
+<div id="passage"></div>
+
+<textarea id="typingInput" placeholder="Click here and start typing..." disabled></textarea>
+
+<div class="controls">
+<button class="primary" id="startBtn">START TEST</button>
+<button class="mode" id="restartBtn">RESTART</button>
+</div>
+<p class="note">Timer starts when you begin typing.</p>
+</div>
+
+<div class="panel" id="result">
+<h2>🎉 TEST COMPLETED!</h2>
+<p>Typing Speed: <strong id="finalWpm">0</strong> WPM</p>
+<p>Accuracy: <strong id="finalAccuracy">0%</strong></p>
+<p>Errors: <strong id="finalErrors">0</strong></p>
+<p>Characters: <strong id="finalChars">0</strong></p>
+<button class="primary" onclick="restartTest()">TRY AGAIN</button>
+</div>
+</main>
+
+<script>
+const passages = [
+"The quick brown fox jumps over the lazy dog. Practice typing every day to improve your speed and accuracy. Keep your fingers on the keyboard and focus on every word.",
+"Learning new skills requires patience and regular practice. A good typist focuses on accuracy first and then gradually increases typing speed.",
+"Technology makes our lives easier. Computers help students learn new things and explore the world. Practice makes every skill better.",
+"Success comes from hard work and consistency. Every day is a new opportunity to learn, improve and achieve your goals."
+];
+
+let duration=60;
+let remaining=60;
+let started=false;
+let finished=false;
+let timerInterval=null;
+let passage="";
+let correctCount=0;
+let errorCount=0;
+
+const input=document.getElementById("typingInput");
+const passageBox=document.getElementById("passage");
+
+function loadPassage(){
+passage=passages[Math.floor(Math.random()*passages.length)];
+passageBox.innerHTML="";
+[...passage].forEach((char,index)=>{
+const span=document.createElement("span");
+span.textContent=char;
+if(index===0)span.classList.add("current");
+passageBox.appendChild(span);
+});
+}
+
+function updateStats(){
+const typed=input.value;
+let correct=0;
+let errors=0;
+
+[...typed].forEach((char,index)=>{
+if(char===passage[index])correct++;
+else errors++;
+});
+
+correctCount=correct;
+errorCount=errors;
+
+const elapsed=Math.max(1,duration-remaining);
+const wpm=Math.round((correct/5)/(elapsed/60));
+const accuracy=typed.length?Math.round(correct/typed.length*100):100;
+
+document.getElementById("wpm").textContent=wpm;
+document.getElementById("accuracy").textContent=accuracy+"%";
+document.getElementById("errors").textContent=errors;
+
+[...passageBox.children].forEach((span,index)=>{
+span.className="";
+if(index<typed.length){
+span.classList.add(typed[index]===passage[index]?"correct":"wrong");
+}
+if(index===typed.length)span.classList.add("current");
+});
+}
+
+function startTimer(){
+if(started||finished)return;
+started=true;
+input.disabled=false;
+input.focus();
+
+timerInterval=setInterval(()=>{
+remaining--;
+document.getElementById("timer").textContent=remaining;
+updateStats();
+
+if(remaining<=0)finishTest();
+},1000);
+}
+
+function finishTest(){
+if(finished)return;
+finished=true;
+clearInterval(timerInterval);
+input.disabled=true;
+updateStats();
+
+document.getElementById("finalWpm").textContent=document.getElementById("wpm").textContent;
+document.getElementById("finalAccuracy").textContent=document.getElementById("accuracy").textContent;
+document.getElementById("finalErrors").textContent=errorCount;
+document.getElementById("finalChars").textContent=input.value.length;
+
+document.getElementById("testArea").style.display="none";
+document.getElementById("result").style.display="block";
+}
+
+function restartTest(){
+clearInterval(timerInterval);
+started=false;
+finished=false;
+remaining=duration;
+input.value="";
+input.disabled=true;
+document.getElementById("timer").textContent=duration;
+document.getElementById("wpm").textContent="0";
+document.getElementById("accuracy").textContent="100%";
+document.getElementById("errors").textContent="0";
+document.getElementById("result").style.display="none";
+document.getElementById("testArea").style.display="block";
+loadPassage();
+}
+
+document.querySelectorAll(".mode[data-time]").forEach(button=>{
+button.addEventListener("click",()=>{
+duration=Number(button.dataset.time);
+document.querySelectorAll(".mode[data-time]").forEach(b=>b.classList.remove("active"));
+button.classList.add("active");
+restartTest();
+});
+});
+
+document.getElementById("startBtn").addEventListener("click",startTimer);
+document.getElementById("restartBtn").addEventListener("click",restartTest);
+
+input.addEventListener("input",()=>{
+if(finished)return;
+if(!started)startTimer();
+
+if(input.value.length>=passage.length){
+finishTest();
+return;
+}
+updateStats();
+});
+
+loadPassage();
+</script>
+</body>
+</html>

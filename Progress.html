@@ -1,0 +1,261 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#050b18">
+<title>My Progress | AJIT TYPING EXPERT</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+body{background:#050b18;color:white;padding:15px}
+header{max-width:1100px;margin:auto;padding:15px 0;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #173657}
+.logo{font-size:19px;font-weight:bold;color:#00c8ff}
+a{color:#00c8ff;text-decoration:none}
+main{max-width:1100px;margin:30px auto}
+h1{text-align:center;color:#00c8ff;margin-bottom:10px}
+.sub{text-align:center;color:#9caec5;margin-bottom:25px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.card{background:#0b192c;border:1px solid #163957;padding:20px;border-radius:13px}
+.card h2{font-size:27px;color:#00d4ff;margin-bottom:8px}
+.card p{font-size:13px;color:#aabbd0}
+.section{margin-top:25px}
+.section h2{font-size:20px;margin-bottom:15px}
+.chart{height:220px;display:flex;align-items:flex-end;justify-content:space-around;gap:10px;padding:15px 5px 0;border-bottom:1px solid #36516d}
+.bar{flex:1;max-width:55px;background:linear-gradient(#00d4ff,#007bff);border-radius:6px 6px 0 0;min-height:3px;position:relative}
+.bar span{position:absolute;bottom:-23px;left:50%;transform:translateX(-50%);font-size:11px;color:#aabbd0}
+.badges{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.badge{background:#10223a;border:1px solid #244b6b;padding:18px 8px;border-radius:12px;text-align:center;opacity:.45}
+.badge.unlocked{opacity:1;border-color:#00c8ff}
+.badge strong{display:block;font-size:30px;margin-bottom:8px}
+.badge p{font-size:12px;color:#b9c9dc}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:13px 8px;text-align:center;border-bottom:1px solid #23415d}
+th{color:#00d4ff}
+.empty{text-align:center;color:#9caec5;padding:25px}
+.actions{text-align:center;margin-top:25px}
+button{padding:12px 20px;background:#087bdc;border:0;border-radius:8px;color:white;font-weight:bold;cursor:pointer}
+.danger{background:#b83245}
+.note{color:#8ca2ba;text-align:center;font-size:12px;margin-top:15px}
+@media(max-width:650px){
+.grid{grid-template-columns:repeat(2,1fr)}
+.badges{grid-template-columns:repeat(2,1fr)}
+table{font-size:12px}
+th,td{padding:10px 3px}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="logo">AJIT TYPING EXPERT</div>
+<a href="index.html">← Home</a>
+</header>
+
+<main>
+
+<h1>🏆 MY PERFORMANCE</h1>
+<p class="sub">Track your typing journey and achievements.</p>
+
+<section class="grid">
+
+<div class="card">
+<h2 id="best">0</h2>
+<p>PERSONAL BEST WPM</p>
+</div>
+
+<div class="card">
+<h2 id="total">0</h2>
+<p>TOTAL TESTS</p>
+</div>
+
+<div class="card">
+<h2 id="accuracy">0%</h2>
+<p>AVERAGE ACCURACY</p>
+</div>
+
+<div class="card">
+<h2 id="gameScore">0</h2>
+<p>BEST GAME SCORE</p>
+</div>
+
+</section>
+
+<section class="section card">
+<h2>📈 Typing Speed Graph</h2>
+<div class="chart" id="chart">
+<div class="empty">No typing records yet.</div>
+</div>
+</section>
+
+<section class="section card">
+<h2>🎖️ Achievements</h2>
+<div class="badges">
+
+<div class="badge" id="b1">
+<strong>🌱</strong>
+<p>First Test</p>
+</div>
+
+<div class="badge" id="b2">
+<strong>⚡</strong>
+<p>20 WPM</p>
+</div>
+
+<div class="badge" id="b3">
+<strong>🔥</strong>
+<p>40 WPM</p>
+</div>
+
+<div class="badge" id="b4">
+<strong>🚀</strong>
+<p>60 WPM</p>
+</div>
+
+<div class="badge" id="b5">
+<strong>🎯</strong>
+<p>90% Accuracy</p>
+</div>
+
+<div class="badge" id="b6">
+<strong>🏆</strong>
+<p>10 Tests</p>
+</div>
+
+<div class="badge" id="b7">
+<strong>🎮</strong>
+<p>First Game</p>
+</div>
+
+<div class="badge" id="b8">
+<strong>👑</strong>
+<p>500 Game Score</p>
+</div>
+
+</div>
+</section>
+
+<section class="section card">
+<h2>⌨️ Typing History</h2>
+<div style="overflow-x:auto">
+<table>
+<thead>
+<tr>
+<th>Date</th>
+<th>WPM</th>
+<th>Accuracy</th>
+<th>Errors</th>
+</tr>
+</thead>
+<tbody id="history">
+<tr><td colspan="4" class="empty">No records available.</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<div class="actions">
+<button onclick="loadProgress()">🔄 Refresh</button>
+<button class="danger" onclick="resetProgress()">Reset Progress</button>
+</div>
+
+<p class="note">Your progress is stored locally on this device.</p>
+
+</main>
+
+<script>
+function getData(key){
+try{
+return JSON.parse(localStorage.getItem(key)) || [];
+}catch(e){
+return [];
+}
+}
+
+function unlock(id,condition){
+document.getElementById(id).classList.toggle("unlocked",condition);
+}
+
+function loadProgress(){
+
+const history=getData("ajitTypingHistory");
+const games=getData("ajitGameHistory");
+
+const best=history.reduce((m,r)=>Math.max(m,Number(r.wpm)||0),0);
+
+const avg=history.length
+?Math.round(history.reduce((s,r)=>s+(Number(r.accuracy)||0),0)/history.length)
+:0;
+
+const gameBest=games.reduce((m,r)=>Math.max(m,Number(r.score)||0),0);
+
+document.getElementById("best").textContent=best;
+document.getElementById("total").textContent=history.length;
+document.getElementById("accuracy").textContent=history.length?avg+"%":"0%";
+document.getElementById("gameScore").textContent=gameBest;
+
+unlock("b1",history.length>=1);
+unlock("b2",best>=20);
+unlock("b3",best>=40);
+unlock("b4",best>=60);
+unlock("b5",avg>=90 && history.length>0);
+unlock("b6",history.length>=10);
+unlock("b7",games.length>=1);
+unlock("b8",gameBest>=500);
+
+const tbody=document.getElementById("history");
+
+if(history.length===0){
+tbody.innerHTML='<tr><td colspan="4" class="empty">No records available yet.</td></tr>';
+}else{
+tbody.innerHTML=history.slice(-20).reverse().map(r=>
+`<tr>
+<td>${escapeHTML(r.date||"-")}</td>
+<td>${Number(r.wpm)||0}</td>
+<td>${Number(r.accuracy)||0}%</td>
+<td>${Number(r.errors)||0}</td>
+</tr>`
+).join("");
+}
+
+const chart=document.getElementById("chart");
+
+if(history.length===0){
+chart.innerHTML='<div class="empty">Complete a typing test to see your graph.</div>';
+}else{
+const records=history.slice(-7);
+const max=Math.max(10,...records.map(r=>Number(r.wpm)||0));
+
+chart.innerHTML=records.map((r,i)=>{
+const value=Number(r.wpm)||0;
+const height=Math.max(3,value/max*175);
+
+return `<div class="bar" style="height:${height}px">
+<span>${value}</span>
+</div>`;
+}).join("");
+}
+}
+
+function escapeHTML(value){
+return String(value).replace(/[&<>"']/g,c=>({
+"&":"&amp;","<":"&lt;",">":"&gt;",
+'"':"&quot;","'":"&#39;"
+})[c]);
+}
+
+function resetProgress(){
+if(confirm("Are you sure you want to delete all your typing and game records?")){
+localStorage.removeItem("ajitTypingHistory");
+localStorage.removeItem("ajitGameHistory");
+loadProgress();
+}
+}
+
+loadProgress();
+</script>
+
+</body>
+</html>

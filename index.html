@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#050816">
+
+<title>NEXORA AI</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  background:#050816;
+  color:white;
+  font-family:Arial,sans-serif;
+  min-height:100vh;
+}
+
+header{
+  height:68px;
+  padding:0 17px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-bottom:1px solid #1b2b45;
+  background:#080f20;
+  position:sticky;
+  top:0;
+  z-index:5;
+}
+
+.logo{
+  font-size:23px;
+  font-weight:bold;
+  color:#38bdf8;
+}
+
+.online{
+  color:#4ade80;
+  font-size:12px;
+}
+
+main{
+  max-width:750px;
+  margin:auto;
+  padding:20px 15px 150px;
+}
+
+.welcome{
+  text-align:center;
+  padding-top:55px;
+}
+
+.brain{
+  width:85px;
+  height:85px;
+  border-radius:25px;
+  border:1px solid #087fba;
+  background:#102746;
+  display:grid;
+  place-items:center;
+  font-size:48px;
+  margin:auto;
+  box-shadow:0 0 35px #087fba55;
+}
+
+h1{
+  font-size:30px;
+  color:#38bdf8;
+  margin-top:22px;
+}
+
+.subtitle{
+  color:#94a3b8;
+  margin-top:10px;
+  font-size:14px;
+}
+
+.features{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-top:38px;
+}
+
+.feature{
+  background:#101b30;
+  border:1px solid #203958;
+  border-radius:16px;
+  padding:18px 10px;
+  text-align:center;
+  color:#e2e8f0;
+  font-size:14px;
+}
+
+.feature span{
+  display:block;
+  font-size:28px;
+  margin-bottom:10px;
+}
+
+.chat{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  margin-top:20px;
+}
+
+.msg{
+  padding:14px;
+  border-radius:15px;
+  max-width:90%;
+  line-height:1.6;
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+}
+
+.user{
+  align-self:flex-end;
+  background:#075985;
+}
+
+.ai{
+  align-self:flex-start;
+  background:#142238;
+  border:1px solid #29466c;
+}
+
+.input-area{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  padding:12px 12px 18px;
+  background:#080f20;
+  border-top:1px solid #1b2b45;
+}
+
+.input-box{
+  max-width:750px;
+  margin:auto;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:9px;
+  border:1px solid #087fba;
+  border-radius:17px;
+  background:#101b30;
+}
+
+input{
+  flex:1;
+  min-width:0;
+  background:transparent;
+  border:0;
+  outline:0;
+  color:white;
+  font-size:15px;
+  padding:9px 4px;
+}
+
+button{
+  border:0;
+  border-radius:12px;
+  padding:11px 14px;
+  background:#078bce;
+  color:white;
+  font-size:17px;
+  cursor:pointer;
+}
+
+button:active{
+  opacity:.7;
+}
+
+.footer{
+  text-align:center;
+  color:#64748b;
+  font-size:12px;
+  margin-top:13px;
+}
+
+.footer strong{
+  color:#38bdf8;
+}
+
+.typing{
+  color:#94a3b8;
+  font-size:12px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">✦ NEXORA AI</div>
+  <div class="online">● ONLINE</div>
+</header>
+
+<main>
+
+<section class="welcome" id="welcome">
+
+  <div class="brain">✦</div>
+
+  <h1>NEXORA AI</h1>
+
+  <p class="subtitle">
+    Your Personal AI Assistant
+  </p>
+
+  <div class="features">
+
+    <div class="feature">
+      <span>💬</span>
+      AI Chat
+    </div>
+
+    <div class="feature">
+      <span>🎙️</span>
+      Voice Assistant
+    </div>
+
+    <div class="feature">
+      <span>🖼️</span>
+      Image Understanding
+    </div>
+
+    <div class="feature">
+      <span>💻</span>
+      Coding Help
+    </div>
+
+    <div class="feature">
+      <span>📚</span>
+      Study Assistant
+    </div>
+
+    <div class="feature">
+      <span>🌐</span>
+      Internet Search
+    </div>
+
+  </div>
+
+</section>
+
+<div class="chat" id="messages"></div>
+
+</main>
+
+<div class="input-area">
+
+  <div class="input-box">
+
+    <input
+      id="prompt"
+      type="text"
+      placeholder="Ask NEXORA anything..."
+    >
+
+    <button onclick="voice()" title="Voice">🎙️</button>
+
+    <button onclick="send()" title="Send">➤</button>
+
+  </div>
+
+  <div class="footer">
+    NEXORA AI<br>
+    <strong>Powered by Ajit Kumar</strong>
+  </div>
+
+</div>
+
+<script>
+
+function send(){
+
+  const input=document.getElementById("prompt");
+  const value=input.value.trim();
+
+  if(!value)return;
+
+  document.getElementById("welcome").style.display="none";
+
+  const messages=document.getElementById("messages");
+
+  const user=document.createElement("div");
+  user.className="msg user";
+  user.textContent=value;
+
+  messages.appendChild(user);
+
+  const ai=document.createElement("div");
+  ai.className="msg ai";
+
+  ai.textContent=
+  "नमस्ते! मैं NEXORA AI हूँ। आपका सवाल मिल गया है। Gemini AI कनेक्शन अगले अपडेट में जोड़ा जाएगा।";
+
+  messages.appendChild(ai);
+
+  input.value="";
+
+  window.scrollTo({
+    top:document.body.scrollHeight,
+    behavior:"smooth"
+  });
+
+}
+
+function voice(){
+
+  const Speech=
+  window.SpeechRecognition ||
+  window.webkitSpeechRecognition;
+
+  if(!Speech){
+    alert("Voice input इस Browser में उपलब्ध नहीं है।");
+    return;
+  }
+
+  const recognition=new Speech();
+
+  recognition.lang="hi-IN";
+
+  recognition.onresult=function(event){
+
+    document.getElementById("prompt").value=
+    event.results[0][0].transcript;
+
+  };
+
+  recognition.start();
+
+}
+
+document.getElementById("prompt")
+.addEventListener("keydown",function(event){
+
+  if(event.key==="Enter"){
+    send();
+  }
+
+});
+
+</script>
+
+</body>
+</html>
